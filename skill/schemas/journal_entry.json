@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V75 Before-After Trade Journal Entry",
+  "type": "object",
+  "required": ["case_id", "instrument", "timeframe", "before_image_ref", "evaluated_at_utc", "entry_plan", "rule_version", "review_status"],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "instrument": {"const": "V75"},
+    "timeframe": {"type": "string"},
+    "before_image_ref": {"type": "string", "description": "Private storage reference; do not place credentials or account identifiers here."},
+    "after_image_ref": {"type": ["string", "null"]},
+    "evaluated_at_utc": {"type": "string", "format": "date-time"},
+    "entry_plan": {
+      "type": "object",
+      "properties": {
+        "verdict": {"enum": ["ENTER", "WATCH", "NO_TRADE"]},
+        "direction": {"enum": ["BUY", "SELL", null]},
+        "entry_price": {"type": ["number", "null"]},
+        "stop_loss": {"type": ["number", "null"]},
+        "take_profit": {"type": ["number", "null"]},
+        "risk_reward_ratio": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": ["object", "null"],
+      "properties": {
+        "result_r": {"type": "number"},
+        "exit_reason": {"type": "string"},
+        "spread_at_entry": {"type": ["number", "null"]},
+        "slippage": {"type": ["number", "null"]},
+        "max_adverse_excursion_r": {"type": ["number", "null"]},
+        "max_favorable_excursion_r": {"type": ["number", "null"]}
+      },
+      "required": ["result_r", "exit_reason"],
+      "additionalProperties": false
+    },
+    "lesson_proposal": {"type": ["string", "null"], "description": "Human-reviewed observation; must not automatically alter strategy rules."},
+    "review_status": {"enum": ["unreviewed", "reviewed", "rejected"]},
+    "rule_version": {"type": "string"}
+  },
+  "additionalProperties": false
+}

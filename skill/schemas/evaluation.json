@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V75 Screenshot Evaluation",
+  "type": "object",
+  "required": ["timestamp_utc", "instrument", "timeframe", "verdict", "gate_status", "trade_parameters", "limitations"],
+  "properties": {
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "instrument": {"const": "V75"},
+    "timeframe": {"type": "string"},
+    "verdict": {"enum": ["ENTER", "WATCH", "NO_TRADE"]},
+    "gate_status": {
+      "type": "object",
+      "required": ["gate_1_structure", "gate_2_breakout_retest", "gate_3_trigger_candle", "gate_4_risk_reward"],
+      "properties": {
+        "gate_1_structure": {"$ref": "#/$defs/gate"},
+        "gate_2_breakout_retest": {"$ref": "#/$defs/gate"},
+        "gate_3_trigger_candle": {"$ref": "#/$defs/gate"},
+        "gate_4_risk_reward": {"$ref": "#/$defs/gate"}
+      },
+      "additionalProperties": false
+    },
+    "trade_parameters": {
+      "type": "object",
+      "properties": {
+        "direction": {"enum": ["BUY", "SELL", null]},
+        "entry_price": {"type": ["number", "null"]},
+        "stop_loss": {"type": ["number", "null"]},
+        "take_profit": {"type": ["number", "null"]},
+        "buffer_applied": {"type": ["number", "null"]},
+        "risk_reward_ratio": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "invalidation_or_watch_trigger": {"type": ["string", "null"]},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "executive_summary": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "required": ["passed", "details"],
+      "properties": {"passed": {"type": "boolean"}, "details": {"type": "string"}},
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
